@@ -77,8 +77,11 @@ body {
     height: 32px;
     background-color: var(--primary-green);
     border-radius: 50%;
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     margin-left: 10px;
+    cursor: pointer;
 }
 
 .hero {

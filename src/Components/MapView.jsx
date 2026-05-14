@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Map, { Source, Layer } from 'react-map-gl/maplibre';
+import { useTranslation } from 'react-i18next';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '../css/mapview.css';
 
@@ -71,6 +72,7 @@ const degradedLandOutline = {
 };
 
 const MapView = () => {
+    const { t, i18n } = useTranslation();
     const [viewState, setViewState] = useState({
         longitude: 37.30,
         latitude: -0.50,
@@ -93,6 +95,10 @@ const MapView = () => {
         }, 2500);
     };
 
+    const changeLanguage = (e) => {
+        i18n.changeLanguage(e.target.value);
+    };
+
     return (
         <div className="map-page-container">
             <div className="map-navbar">
@@ -100,9 +106,16 @@ const MapView = () => {
                     <span>MITI</span>
                     <span>TRACK</span>
                 </Link>
-                <div className="map-nav-links">
-                    <Link to="/">HOME</Link>
-                    <Link to="/dashboard">DASHBOARD</Link>
+                <div className="map-nav-links" style={{ display: 'flex', alignItems: 'center' }}>
+                    <Link to="/">{t('nav.home')}</Link>
+                    <Link to="/dashboard">{t('nav.dashboard')}</Link>
+                    <select className="lang-select" onChange={changeLanguage} defaultValue={i18n.language} style={{ marginLeft: '20px', border: 'none', background: 'transparent', color: '#ccc', fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>
+                        <option value="en">ENGLISH</option>
+                        <option value="es">ESPAÑOL</option>
+                        <option value="fr">FRANÇAIS</option>
+                        <option value="sw">KISWAHILI</option>
+                        <option value="de">DEUTSCH</option>
+                    </select>
                 </div>
             </div>
 
@@ -123,17 +136,17 @@ const MapView = () => {
                 </Map>
 
                 <div className="map-control-panel">
-                    <h3>AI Land Reconnaissance</h3>
+                    <h3>{t('map.title')}</h3>
                     <p className="panel-desc">
-                        Identify optimal bare soil and degraded zones for afforestation using Sentinel-2 BSI and NDMI indices.
+                        {t('map.desc')}
                     </p>
 
                     <div className="region-select">
-                        <label>Target Region</label>
+                        <label>{t('map.targetRegion')}</label>
                         <select disabled={isScanning}>
-                            <option>Mount Kenya Slopes</option>
-                            <option>Aberdare Edge</option>
-                            <option>Thika River Basin</option>
+                            <option>{t('map.regions.mtKenya')}</option>
+                            <option>{t('map.regions.aberdare')}</option>
+                            <option>{t('map.regions.thika')}</option>
                         </select>
                     </div>
 
@@ -142,21 +155,21 @@ const MapView = () => {
                         onClick={runAiScan}
                         disabled={isScanning || aiData !== null}
                     >
-                        {isScanning ? 'Ingesting Satellite Data...' : aiData ? 'Scan Complete' : 'Run Suitability Scan'}
+                        {isScanning ? t('map.scanning') : aiData ? t('map.scanComplete') : t('map.runScan')}
                     </button>
 
                     {aiData && (
                         <div className="results-card">
-                            <h4>Planting Zone Discovered</h4>
+                            <h4>{t('map.zoneDiscovered')}</h4>
                             <div className="metric">
-                                <span>Area Size:</span>
-                                <strong>{aiData.features[0].properties.areaHectares} Hectares</strong>
+                                <span>{t('map.areaSize')}</span>
+                                <strong>{aiData.features[0].properties.areaHectares} {t('map.hectares')}</strong>
                             </div>
                             <div className="metric">
-                                <span>AI Confidence:</span>
+                                <span>{t('map.confidence')}</span>
                                 <strong>{aiData.features[0].properties.suitabilityScore}%</strong>
                             </div>
-                            <button className="btn-action-small">Initiate Project</button>
+                            <button className="btn-action-small">{t('map.initiate')}</button>
                         </div>
                     )}
                 </div>
